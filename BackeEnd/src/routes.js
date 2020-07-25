@@ -13,5 +13,5 @@ routes.post("/sessions", SessionController.store);
 routes.use(authMiddlewares);
 
 //importando rota editar
-routes.put("/userEdit", UseController.update);
+routes.put("/userEdit",UseController.update);
 module.exports = routes;

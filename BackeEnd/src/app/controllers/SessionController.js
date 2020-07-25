@@ -6,18 +6,20 @@ import autConfig from "../../config/auth";
 //biblioteca TOKEN
 import jwt from "jsonwebtoken";
 
+
 class SessionController {
   async store(req, res) {
     //pegando os dados no body
     const { email, password } = req.body;
     //procurando o user pelo e-mail(email é unico)
-    const user = User.findOne({ where: { email: email } });
+    const user = await User.findOne({ where: { email } });
+    
     ///verificando se o usuário existe no banco de dados
     if (!user) {
       return res.status(401).json({ erro: "user not Foud" });
     }
     //verificando se a senha está errada
-    if (!((await user).checkPassword(password))) {
+    if (!(await user.checkPassword(password))) {
       return res.status(401).json({ erro: "user does not match" });
     }
     //pegando o ID e NAME do usuário para o Token
@@ -36,12 +38,10 @@ class SessionController {
         name,
         email,
       },
-      token: jwt.sign({id}, autConfig.secret, {
+      token: jwt.sign({ id }, autConfig.secret, {
         expiresIn: autConfig.expiresIn,
       }),
-      
     });
   }
-  
 }
 export default new SessionController();
